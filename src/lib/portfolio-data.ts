@@ -194,6 +194,7 @@ export const INITIAL_PROFILE: ProfileData = {
     { label: "LinkedIn", href: "https://www.linkedin.com/in/tahmidul-kashfi" },
     { label: "Kaggle", href: "https://www.kaggle.com/tahmidulkashfi" },
     { label: "LeetCode", href: "https://leetcode.com/u/tahmidulkashfi15/" },
+    { label: "Codeforces", href: "https://codeforces.com/profile/kashfi20" },
   ],
 };
 

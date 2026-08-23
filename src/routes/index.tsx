@@ -14,6 +14,7 @@ import {
   Volume2,
   VolumeX,
   Lock,
+  Terminal,
 } from "lucide-react";
 import {
   getPortfolioData,
@@ -44,6 +45,7 @@ const SOCIAL_ICONS: Record<string, LucideIcon> = {
   LinkedIn: Linkedin,
   Kaggle: Trophy,
   LeetCode: Code2,
+  Codeforces: Terminal,
 };
 
 function Index() {
