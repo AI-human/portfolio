@@ -63,7 +63,7 @@ function Index() {
     <div className="relative min-h-screen overflow-x-hidden">
       <CursorGlow />
       <Nav resumeUrl={data.profile.resumeUrl} />
-      <main className="relative mx-auto max-w-6xl px-6 pb-32 pt-28 md:pt-40">
+      <main className="relative mx-auto max-w-6xl px-4 sm:px-6 pb-24 sm:pb-32 pt-24 sm:pt-28 md:pt-40">
         <Hero profile={data.profile} />
         <Projects projects={data.projects} />
         <About skills={data.profile.skills} bio={data.profile.bio} />
@@ -190,26 +190,26 @@ function Hero({ profile }: { profile: ProfileData }) {
           {profile.availability}
         </div>
       </div>
-      <h1 className="animate-fade-up mt-6 text-balance text-5xl font-medium leading-[1.02] tracking-tight md:text-7xl">
+      <h1 className="animate-fade-up mt-6 text-balance text-3xl font-medium leading-[1.08] tracking-tight sm:text-5xl md:text-7xl">
         {profile.name}.
         <br />
         <span className="text-muted-foreground">{profile.tagline}</span>
       </h1>
-      <p className="animate-fade-up mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+      <p className="animate-fade-up mt-6 sm:mt-8 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
         {profile.bio}
       </p>
 
-      <div className="animate-fade-up mt-10 flex flex-wrap items-center gap-3">
+      <div className="animate-fade-up mt-8 sm:mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
         <a
           href="#work"
-          className="group inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-transform hover:scale-[1.02]"
+          className="group inline-flex items-center justify-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background transition-transform hover:scale-[1.02]"
         >
           View selected work
           <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </a>
         <a
           href="#contact"
-          className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-5 py-2.5 text-sm text-foreground backdrop-blur transition-colors hover:bg-surface"
+          className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-surface/60 px-5 py-3 text-sm text-foreground backdrop-blur transition-colors hover:bg-surface"
         >
           <Mail className="size-4" />
           Get in touch
@@ -584,8 +584,8 @@ function Certifications({ certifications }: { certifications: CertificationItem[
 
 function Contact({ profile }: { profile: ProfileData }) {
   return (
-    <section id="contact" className="mt-32 scroll-mt-24">
-      <div className="relative overflow-hidden rounded-3xl border border-border bg-[image:var(--gradient-card)] p-10 md:p-16">
+    <section id="contact" className="mt-24 sm:mt-32 scroll-mt-24">
+      <div className="relative overflow-hidden rounded-3xl border border-border bg-[image:var(--gradient-card)] p-6 sm:p-10 md:p-16">
         <div
           aria-hidden
           className="pointer-events-none absolute -top-40 left-1/2 h-80 w-[600px] -translate-x-1/2 rounded-full bg-brand/20 blur-3xl"
@@ -594,28 +594,30 @@ function Contact({ profile }: { profile: ProfileData }) {
           <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
             Contact
           </p>
-          <h2 className="mt-3 max-w-2xl text-balance text-4xl font-medium tracking-tight md:text-5xl">
+          <h2 className="mt-3 max-w-2xl text-balance text-3xl font-medium tracking-tight sm:text-4xl md:text-5xl leading-tight">
             Have a vision problem worth solving?
           </h2>
-          <p className="mt-4 max-w-xl text-muted-foreground">
+          <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
             I'm open to CV / ML engineering roles, research collaborations, and freelance work.
             Reach out — I reply within a day.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <a
               href={`mailto:${profile.email}`}
-              className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-transform hover:scale-[1.02]"
+              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full bg-foreground px-5 py-3 text-xs sm:text-sm font-medium text-background transition-transform hover:scale-[1.02] shadow-sm"
             >
-              <Mail className="size-4" /> {profile.email}
+              <Mail className="size-4 shrink-0" />
+              <span className="truncate">{profile.email}</span>
             </a>
             <a
               href={profile.resumeUrl}
               target="_blank"
               rel="noreferrer"
               download="Kashfi_Resume.pdf"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-5 py-2.5 text-sm backdrop-blur transition-colors hover:bg-surface"
+              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full border border-border bg-surface/60 px-5 py-3 text-xs sm:text-sm font-medium backdrop-blur transition-colors hover:bg-surface text-foreground"
             >
-              <FileText className="size-4" /> Download resume
+              <FileText className="size-4 shrink-0" />
+              <span>Download resume</span>
             </a>
           </div>
         </div>
