@@ -29,7 +29,6 @@ import type {
   ProfileData,
   SkillCategory,
 } from "../types/portfolio";
-import { AgentCopilot } from "../components/AgentCopilot";
 
 import type { LucideIcon } from "lucide-react";
 
@@ -54,7 +53,6 @@ function Index() {
     certifications: INITIAL_CERTIFICATIONS,
     profile: INITIAL_PROFILE,
   });
-  const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
   useEffect(() => {
     getPortfolioData().then((res) => {
@@ -64,44 +62,19 @@ function Index() {
     });
   }, []);
 
-  const displayedProjects = activeFilter
-    ? data.projects.filter((p) => {
-        const term = activeFilter.toLowerCase();
-        return (
-          p.title.toLowerCase().includes(term) ||
-          p.tag.toLowerCase().includes(term) ||
-          p.blurb.toLowerCase().includes(term) ||
-          p.stack.some((s) => s.toLowerCase().includes(term))
-        );
-      })
-    : data.projects;
-
   return (
     <div className="relative min-h-screen overflow-x-hidden">
       <CursorGlow />
       <Nav resumeUrl={data.profile.resumeUrl} portraitUrl={data.profile.portraitUrl} />
       <main className="relative mx-auto max-w-6xl px-4 sm:px-6 pb-24 sm:pb-32 pt-24 sm:pt-28 md:pt-40">
         <Hero profile={data.profile} />
-        <Projects
-          projects={displayedProjects}
-          totalCount={data.projects.length}
-          activeFilter={activeFilter}
-          onClearFilter={() => setActiveFilter(null)}
-        />
+        <Projects projects={data.projects} />
         <About skills={data.profile.skills} bio={data.profile.bio} />
         <Experience experience={data.experience} />
         <Certifications certifications={data.certifications} />
         <Contact profile={data.profile} />
       </main>
       <Footer socials={data.profile.socials} />
-      <AgentCopilot
-        projects={data.projects}
-        experience={data.experience}
-        certifications={data.certifications}
-        profile={data.profile}
-        activeFilter={activeFilter}
-        onFilterChange={setActiveFilter}
-      />
     </div>
   );
 }
@@ -282,17 +255,7 @@ function Hero({ profile }: { profile: ProfileData }) {
   );
 }
 
-function Projects({
-  projects,
-  totalCount,
-  activeFilter,
-  onClearFilter,
-}: {
-  projects: Project[];
-  totalCount: number;
-  activeFilter: string | null;
-  onClearFilter: () => void;
-}) {
+function Projects({ projects }: { projects: Project[] }) {
   return (
     <section id="work" className="mt-32 scroll-mt-24">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
@@ -300,46 +263,18 @@ function Projects({
           <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
             Selected work
           </p>
-          <div className="mt-2 flex items-center gap-3 flex-wrap">
-            <h2 className="text-3xl font-medium tracking-tight md:text-4xl">Projects</h2>
-            {activeFilter && (
-              <div className="flex items-center gap-2 rounded-full border border-brand/40 bg-brand/10 px-3 py-1 text-xs font-medium text-brand">
-                <span>Filter: &ldquo;{activeFilter}&rdquo;</span>
-                <button
-                  onClick={onClearFilter}
-                  className="rounded-full bg-brand/20 p-0.5 hover:bg-brand/30 transition text-brand"
-                  aria-label="Clear filter"
-                >
-                  ✕
-                </button>
-              </div>
-            )}
-          </div>
+          <h2 className="mt-2 text-3xl font-medium tracking-tight md:text-4xl">Projects</h2>
         </div>
         <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-          {activeFilter
-            ? `Showing ${projects.length} of ${totalCount} shipped`
-            : `${projects.length} shipped`}
+          {projects.length} shipped
         </span>
       </div>
 
-      {projects.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-border bg-surface/30 p-12 text-center">
-          <p className="text-sm text-muted-foreground">No projects match the current filter.</p>
-          <button
-            onClick={onClearFilter}
-            className="mt-4 inline-flex items-center rounded-full bg-brand px-4 py-2 text-xs font-medium text-background transition hover:opacity-90"
-          >
-            Reset Filter
-          </button>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          {projects.map((p, i) => (
-            <ProjectCard key={p.id || p.title} project={p} index={i} />
-          ))}
-        </div>
-      )}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        {projects.map((p, i) => (
+          <ProjectCard key={p.id || p.title} project={p} index={i} />
+        ))}
+      </div>
     </section>
   );
 }
