@@ -153,6 +153,7 @@ function Nav({ resumeUrl, portraitUrl }: { resumeUrl: string; portraitUrl: strin
             ["Work", "#work"],
             ["About", "#about"],
             ["Experience", "#experience"],
+            ["Certifications", "#certifications"],
             ["Contact", "#contact"],
           ].map(([l, h]) => (
             <a
