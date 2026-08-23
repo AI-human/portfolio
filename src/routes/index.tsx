@@ -13,199 +13,65 @@ import {
   Pause,
   Volume2,
   VolumeX,
+  Lock,
 } from "lucide-react";
+import {
+  getPortfolioData,
+  INITIAL_PROJECTS,
+  INITIAL_EXPERIENCE,
+  INITIAL_CERTIFICATIONS,
+  INITIAL_PROFILE,
+} from "../lib/portfolio-data";
+import type {
+  Project,
+  ExperienceItem,
+  CertificationItem,
+  ProfileData,
+  SkillCategory,
+} from "../types/portfolio";
 
-import idcard from "@/assets/idcard_ai.mp4.asset.json";
-import sketch from "@/assets/sketch_ai.mp4.asset.json";
-import faceMouse from "@/assets/face_mouse_ai.mp4.asset.json";
-import attendance from "@/assets/facial_attendance_system.mp4.asset.json";
-import resume from "@/assets/kashfi_resumev1.pdf.asset.json";
-import portrait from "@/assets/professional.jpg.asset.json";
-import certNN from "@/assets/certs/brave_screenshot_www.coursera.org.jpg.asset.json";
-import certCNN from "@/assets/certs/CERTIFICATE_LANDING_PAGE~URKXK7BZC8JY.jpg.asset.json";
-import certSeq from "@/assets/certs/brave_screenshot_www.coursera.org_1.jpg.asset.json";
-import certImp from "@/assets/certs/brave_screenshot_s3.amazonaws.com.jpg.asset.json";
-import certCode from "@/assets/certs/brave_screenshot_www.codecademy.com.jpg.asset.json";
+import type { LucideIcon } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-type Project = {
-  title: string;
-  tag: string;
-  blurb: string;
-  stack: string[];
-  date: string;
-  metric?: { label: string; value: string };
-  video?: string;
-  link?: string;
-  linkedin?: string;
-  span?: string;
+const SOCIAL_ICONS: Record<string, LucideIcon> = {
+  GitHub: Github,
+  LinkedIn: Linkedin,
+  Kaggle: Trophy,
+  LeetCode: Code2,
 };
 
-const projects: Project[] = [
-  {
-    title: "ID Card Detection",
-    tag: "Object Detection",
-    blurb:
-      "YOLOv11 pipeline detecting university ID cards across capture angles, lighting, and occlusion. Trained on a custom-labeled dataset.",
-    stack: ["YOLOv11", "PyTorch", "Roboflow"],
-    date: "Mar 2025",
-    metric: { label: "mAP@50", value: "0.82" },
-    video: idcard.url,
-    link: "https://www.kaggle.com/code/tahmidulkashfi/iiuc-idcard-v2-0-38map95",
-    linkedin: "https://www.linkedin.com/feed/update/urn:li:activity:7252285574110171137/",
-    span: "lg:col-span-2",
-  },
-  {
-    title: "Sketch AI",
-    tag: "Applied CV · HCI",
-    blurb:
-      "Real-time air canvas system using hand landmark detection to track fingertip motion and draw directly on screen via webcam gestures.",
-    stack: ["MediaPipe", "OpenCV", "Python"],
-    date: "Nov 2024",
-    video: sketch.url,
-    linkedin: "https://www.linkedin.com/feed/update/urn:li:activity:7267928416534839296/",
-  },
-  {
-    title: "Face Mouse",
-    tag: "Accessibility · HCI",
-    blurb:
-      "Head-pose driven cursor and click for users with limited hand mobility. Real-time face mesh + gesture triggers.",
-    stack: ["MediaPipe", "OpenCV", "PyAutoGUI"],
-    date: "Aug 2024",
-    video: faceMouse.url,
-    linkedin: "https://www.linkedin.com/feed/update/urn:li:activity:7271416959215239168/",
-  },
-  {
-    title: "Facial Attendance System",
-    tag: "Face Recognition",
-    blurb:
-      "Live attendance from a single camera stream. Face embeddings matched against an enrolled database with logging.",
-    stack: ["FaceNet", "OpenCV", "SQLite"],
-    date: "May 2024",
-    video: attendance.url,
-    linkedin: "https://www.linkedin.com/feed/update/urn:li:activity:7257462743069270016/",
-    span: "lg:col-span-2",
-  },
-
-  {
-    title: "BanglaPoemGPT",
-    tag: "LLM · Bengali NLP",
-    blurb:
-      "Fine-tuned language model that generates Bengali poems in classical meter, trained on a curated corpus.",
-    stack: ["Transformers", "HuggingFace"],
-    date: "Feb 2024",
-  },
-  {
-    title: "Bengali Digits DCGAN",
-    tag: "Generative · GAN",
-    blurb:
-      "Deep convolutional GAN synthesizing handwritten Bengali digits for dataset augmentation.",
-    stack: ["PyTorch", "DCGAN"],
-    date: "Oct 2023",
-  },
-  {
-    title: "Hand Tracking & Bus Tracking",
-    tag: "Applied CV",
-    blurb:
-      "Real-time hand landmark tracking for gesture control and a live GPS-based bus tracking prototype.",
-    stack: ["MediaPipe", "React", "Node"],
-    date: "Jun 2023",
-  },
-];
-
-const skills = [
-  { label: "Languages", items: ["Python", "C++", "JavaScript/TypeScript", "SQL"] },
-  { label: "Frameworks", items: ["PyTorch", "TensorFlow", "Keras", "FastAPI"] },
-  {
-    label: "Libraries",
-    items: ["OpenCV", "MediaPipe", "NumPy", "Pandas", "scikit-learn", "Albumentations"],
-  },
-  { label: "Tools", items: ["Git", "Docker", "Kaggle", "Roboflow", "Linux"] },
-];
-
-const experience = [
-  {
-    role: "Machine Learning Engineering Intern",
-    org: "FlyRank AI",
-    period: "Jul 2026 — Aug 2026",
-    body: "Selected for the FlyRank AI ML Engineering internship — a 6-week program focused on applied machine learning engineering. Building and shipping ML systems alongside the FlyRank team.",
-  },
-  {
-    role: "AI Trainer — Computer Vision",
-    org: "Outlier AI",
-    period: "2023 — Present",
-    body: "Evaluating and improving vision-language model outputs across detection, grounding, and reasoning tasks. Writing rubric-driven feedback used for RLHF training loops.",
-  },
-  {
-    role: "Freelance Computer Vision Engineer",
-    org: "Independent",
-    period: "2022 — Present",
-    body: "Delivered custom CV pipelines: document detection, face verification, and gesture-driven interfaces. Full loop — data collection, training, deployment.",
-  },
-];
-
-const certifications = [
-  {
-    title: "Neural Networks & Deep Learning",
-    issuer: "DeepLearning.AI · Coursera",
-    date: "Jan 2024",
-    href: "https://www.coursera.org/account/accomplishments/certificate/Z8ERPLQ3CLFZ",
-    image: certNN.url,
-  },
-  {
-    title: "Improving Deep Neural Networks",
-    issuer: "DeepLearning.AI · Coursera",
-    date: "Jan 2024",
-    href: "https://www.coursera.org/account/accomplishments/verify/PH5R5XW9ZUC3",
-    image: certImp.url,
-  },
-  {
-    title: "Convolutional Neural Networks",
-    issuer: "DeepLearning.AI · Coursera",
-    date: "Jul 2024",
-    href: "https://www.coursera.org/account/accomplishments/verify/URKXK7BZC8JY",
-    image: certCNN.url,
-  },
-  {
-    title: "Sequence Models",
-    issuer: "DeepLearning.AI · Coursera",
-    date: "Jul 2024",
-    href: "https://www.coursera.org/account/accomplishments/certificate/VG3F3QYWC9PG",
-    image: certSeq.url,
-  },
-  {
-    title: "Data Scientist: Machine Learning",
-    issuer: "Codecademy · Professional Certification",
-    date: "Feb 2024",
-    href: "https://www.codecademy.com/profiles/kashfi20/certificates/8e9e59de3f924b33ad2371faf667129b",
-    image: certCode.url,
-  },
-];
-
-const socials = [
-  { label: "GitHub", href: "https://github.com/", icon: Github },
-  { label: "LinkedIn", href: "https://www.linkedin.com/", icon: Linkedin },
-  { label: "Kaggle", href: "https://www.kaggle.com/tahmidulkashfi", icon: Trophy },
-  { label: "LeetCode", href: "https://leetcode.com/", icon: Code2 },
-];
-
 function Index() {
+  const [data, setData] = useState({
+    projects: INITIAL_PROJECTS,
+    experience: INITIAL_EXPERIENCE,
+    certifications: INITIAL_CERTIFICATIONS,
+    profile: INITIAL_PROFILE,
+  });
+
+  useEffect(() => {
+    getPortfolioData().then((res) => {
+      if (res) {
+        setData(res);
+      }
+    });
+  }, []);
+
   return (
     <div className="relative min-h-screen overflow-x-hidden">
       <CursorGlow />
-      <Nav />
+      <Nav resumeUrl={data.profile.resumeUrl} />
       <main className="relative mx-auto max-w-6xl px-6 pb-32 pt-28 md:pt-40">
-        <Hero />
-        <Projects />
-        <About />
-        <Experience />
-        <Certifications />
-        <Contact />
+        <Hero profile={data.profile} />
+        <Projects projects={data.projects} />
+        <About skills={data.profile.skills} bio={data.profile.bio} />
+        <Experience experience={data.experience} />
+        <Certifications certifications={data.certifications} />
+        <Contact profile={data.profile} />
       </main>
-      <Footer />
+      <Footer socials={data.profile.socials} />
     </div>
   );
 }
@@ -264,7 +130,7 @@ function CursorGlow() {
   );
 }
 
-function Nav() {
+function Nav({ resumeUrl }: { resumeUrl: string }) {
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4">
       <nav className="flex w-full max-w-3xl items-center justify-between rounded-full border border-border bg-background/70 px-4 py-2 backdrop-blur-xl">
@@ -291,7 +157,9 @@ function Nav() {
           ))}
         </div>
         <a
-          href={resume.url}
+          href={resumeUrl}
+          target="_blank"
+          rel="noreferrer"
           download="Kashfi_Resume.pdf"
           className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-3.5 py-1.5 text-xs font-medium text-background transition-transform hover:scale-[1.02]"
         >
@@ -302,15 +170,15 @@ function Nav() {
   );
 }
 
-function Hero() {
+function Hero({ profile }: { profile: ProfileData }) {
   return (
     <section id="top" className="relative pt-8 md:pt-16">
       <div className="animate-fade-up flex items-center gap-4">
         <div className="relative shrink-0">
           <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-brand/40 via-brand/10 to-transparent blur-md" />
           <img
-            src={portrait.url}
-            alt="Tahmidul Bin Ferdous"
+            src={profile.portraitUrl}
+            alt={profile.name}
             className="relative size-16 rounded-full object-cover ring-2 ring-background shadow-lg md:size-20"
           />
         </div>
@@ -319,20 +187,16 @@ function Hero() {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand/60 opacity-75" />
             <span className="relative inline-flex size-2 rounded-full bg-brand" />
           </span>
-          Available for CV / ML engineering roles
+          {profile.availability}
         </div>
       </div>
       <h1 className="animate-fade-up mt-6 text-balance text-5xl font-medium leading-[1.02] tracking-tight md:text-7xl">
-        Tahmidul Bin Ferdous.
+        {profile.name}.
         <br />
-        <span className="text-muted-foreground">
-          Building machines that see, understand, and act.
-        </span>
+        <span className="text-muted-foreground">{profile.tagline}</span>
       </h1>
       <p className="animate-fade-up mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-        Computer Vision & Deep Learning engineer and final-year CS student in Chattogram,
-        Bangladesh. I ship end-to-end vision systems — from annotation to real-time inference —
-        across detection, generation, and accessibility.
+        {profile.bio}
       </p>
 
       <div className="animate-fade-up mt-10 flex flex-wrap items-center gap-3">
@@ -354,33 +218,36 @@ function Hero() {
 
       <div className="mt-14 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-muted-foreground">
         <span className="inline-flex items-center gap-2">
-          <MapPin className="size-4" /> Chattogram, Bangladesh
+          <MapPin className="size-4" /> {profile.location}
         </span>
         <span className="hidden h-3 w-px bg-border md:block" />
         <span className="inline-flex items-center gap-2">
-          <FileText className="size-4" /> Final-year CS student
+          <FileText className="size-4" /> {profile.studentStatus}
         </span>
         <span className="hidden h-3 w-px bg-border md:block" />
         <div className="flex items-center gap-1">
-          {socials.map((s) => (
-            <a
-              key={s.label}
-              href={s.href}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={s.label}
-              className="grid size-8 place-items-center rounded-full border border-border bg-surface/50 text-muted-foreground transition-colors hover:border-brand/40 hover:text-foreground"
-            >
-              <s.icon className="size-4" />
-            </a>
-          ))}
+          {profile.socials.map((s) => {
+            const Icon = SOCIAL_ICONS[s.label] || Github;
+            return (
+              <a
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={s.label}
+                className="grid size-8 place-items-center rounded-full border border-border bg-surface/50 text-muted-foreground transition-colors hover:border-brand/40 hover:text-foreground"
+              >
+                <Icon className="size-4" />
+              </a>
+            );
+          })}
         </div>
       </div>
     </section>
   );
 }
 
-function Projects() {
+function Projects({ projects }: { projects: Project[] }) {
   return (
     <section id="work" className="mt-32 scroll-mt-24">
       <SectionHeader
@@ -391,7 +258,7 @@ function Projects() {
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {projects.map((p, i) => (
-          <ProjectCard key={p.title} project={p} index={i} />
+          <ProjectCard key={p.id || p.title} project={p} index={i} />
         ))}
       </div>
     </section>
@@ -542,7 +409,9 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.25 });
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), {
+      threshold: 0.25,
+    });
     io.observe(el);
     return () => io.disconnect();
   }, []);
@@ -616,7 +485,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   );
 }
 
-function About() {
+function About({ skills }: { skills: SkillCategory[]; bio: string }) {
   return (
     <section id="about" className="mt-32 scroll-mt-24">
       <SectionHeader eyebrow="About" title="Stack & focus" />
@@ -646,14 +515,14 @@ function About() {
   );
 }
 
-function Experience() {
+function Experience({ experience }: { experience: ExperienceItem[] }) {
   return (
     <section id="experience" className="mt-32 scroll-mt-24">
       <SectionHeader eyebrow="Experience" title="Where I've worked" />
       <div className="space-y-3">
         {experience.map((e) => (
           <div
-            key={e.role}
+            key={e.id || e.role}
             className="group grid gap-2 rounded-2xl border border-border bg-[image:var(--gradient-card)] p-6 transition-colors hover:border-brand/30 md:grid-cols-[220px_1fr] md:gap-8"
           >
             <div>
@@ -673,14 +542,14 @@ function Experience() {
   );
 }
 
-function Certifications() {
+function Certifications({ certifications }: { certifications: CertificationItem[] }) {
   return (
     <section id="certifications" className="mt-32 scroll-mt-24">
       <SectionHeader eyebrow="Learning" title="Certifications" />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {certifications.map((c) => (
           <a
-            key={c.title}
+            key={c.id || c.title}
             href={c.href}
             target="_blank"
             rel="noreferrer"
@@ -713,7 +582,7 @@ function Certifications() {
   );
 }
 
-function Contact() {
+function Contact({ profile }: { profile: ProfileData }) {
   return (
     <section id="contact" className="mt-32 scroll-mt-24">
       <div className="relative overflow-hidden rounded-3xl border border-border bg-[image:var(--gradient-card)] p-10 md:p-16">
@@ -734,13 +603,15 @@ function Contact() {
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <a
-              href="mailto:tahmidul.kashfi@gmail.com"
+              href={`mailto:${profile.email}`}
               className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-transform hover:scale-[1.02]"
             >
-              <Mail className="size-4" /> tahmidul.kashfi@gmail.com
+              <Mail className="size-4" /> {profile.email}
             </a>
             <a
-              href={resume.url}
+              href={profile.resumeUrl}
+              target="_blank"
+              rel="noreferrer"
               download="Kashfi_Resume.pdf"
               className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-5 py-2.5 text-sm backdrop-blur transition-colors hover:bg-surface"
             >
@@ -779,26 +650,38 @@ function SectionHeader({
   );
 }
 
-function Footer() {
+function Footer({ socials }: { socials: { label: string; href: string }[] }) {
   return (
     <footer className="border-t border-border">
       <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-6 py-10 md:flex-row md:items-center">
-        <div className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Tahmidul Bin Ferdous · Built with care in Chattogram
+        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-4 text-sm text-muted-foreground">
+          <span>
+            © {new Date().getFullYear()} Tahmidul Bin Ferdous · Built with care in Chattogram
+          </span>
+          <span className="hidden sm:inline text-border">·</span>
+          <a
+            href="/admin"
+            className="inline-flex items-center gap-1 text-xs text-muted-foreground/60 transition-colors hover:text-brand"
+          >
+            <Lock className="size-3" /> Admin Panel
+          </a>
         </div>
         <div className="flex items-center gap-1">
-          {socials.map((s) => (
-            <a
-              key={s.label}
-              href={s.href}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={s.label}
-              className="grid size-9 place-items-center rounded-full border border-border bg-surface/50 text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <s.icon className="size-4" />
-            </a>
-          ))}
+          {socials.map((s) => {
+            const Icon = SOCIAL_ICONS[s.label] || Github;
+            return (
+              <a
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={s.label}
+                className="grid size-9 place-items-center rounded-full border border-border bg-surface/50 text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <Icon className="size-4" />
+              </a>
+            );
+          })}
         </div>
       </div>
     </footer>
