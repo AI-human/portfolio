@@ -290,7 +290,7 @@ function VideoPlayer({
   metric?: { label: string; value: string };
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [playing, setPlaying] = useState(true);
+  const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(true);
   const [progress, setProgress] = useState(0);
   const [hover, setHover] = useState(false);
@@ -298,12 +298,10 @@ function VideoPlayer({
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
-    if (inView) {
-      v.play().catch(() => {});
-    } else {
+    if (!inView && playing) {
       v.pause();
     }
-  }, [inView]);
+  }, [inView, playing]);
 
   const togglePlay = (e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -338,11 +336,10 @@ function VideoPlayer({
     >
       <video
         ref={videoRef}
-        src={inView ? src : undefined}
+        src={inView ? `${src}#t=0.001` : undefined}
         muted={muted}
         loop
         playsInline
-        autoPlay
         preload="metadata"
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
@@ -359,10 +356,10 @@ function VideoPlayer({
         <button
           type="button"
           onClick={togglePlay}
-          aria-label="Play"
-          className="absolute inset-0 grid place-items-center bg-background/30 backdrop-blur-[2px] transition"
+          aria-label="Play video"
+          className="absolute inset-0 grid place-items-center bg-background/25 backdrop-blur-[1px] transition-all hover:bg-background/35 group/play"
         >
-          <span className="grid size-14 place-items-center rounded-full bg-background/80 text-foreground shadow-lg ring-1 ring-border transition-transform hover:scale-105">
+          <span className="grid size-14 place-items-center rounded-full bg-background/90 text-foreground shadow-2xl ring-1 ring-border/80 transition-all duration-300 group-hover/play:scale-110 group-hover/play:bg-brand group-hover/play:text-brand-foreground">
             <Play className="size-6 translate-x-0.5" fill="currentColor" />
           </span>
         </button>
