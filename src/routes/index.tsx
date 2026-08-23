@@ -60,10 +60,10 @@ const projects: Project[] = [
   },
   {
     title: "Sketch AI",
-    tag: "Generative Vision",
+    tag: "Applied CV · HCI",
     blurb:
-      "Sketch-to-image system turning rough line art into photoreal renders using diffusion + ControlNet edge conditioning.",
-    stack: ["Diffusion", "ControlNet", "Python"],
+      "Real-time air canvas system using hand landmark detection to track fingertip motion and draw directly on screen via webcam gestures.",
+    stack: ["MediaPipe", "OpenCV", "Python"],
     date: "Nov 2024",
     video: sketch.url,
     linkedin: "https://www.linkedin.com/feed/update/urn:li:activity:7267928416534839296/",
