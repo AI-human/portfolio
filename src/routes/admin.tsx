@@ -4,7 +4,7 @@ import { AdminLayout } from "../components/admin/AdminLayout";
 export const Route = createFileRoute("/admin")({
   component: AdminPage,
   head: () => ({
-    meta: [{ title: "Portfolio of Kashfi — Admin Panel" }],
+    meta: [{ title: "Portfolio Admin Dashboard — Tahmidul Kashfi" }],
   }),
 });
 

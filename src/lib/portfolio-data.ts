@@ -297,14 +297,37 @@ export async function getPortfolioData(): Promise<{
             email: profileRes.data.email,
             portraitUrl: profileRes.data.portrait_url,
             resumeUrl: profileRes.data.resume_url,
-            skills:
-              typeof profileRes.data.skills === "string"
-                ? JSON.parse(profileRes.data.skills)
-                : profileRes.data.skills || INITIAL_PROFILE.skills,
-            socials:
-              typeof profileRes.data.socials === "string"
-                ? JSON.parse(profileRes.data.socials)
-                : profileRes.data.socials || INITIAL_PROFILE.socials,
+            skills: (() => {
+              const raw =
+                typeof profileRes.data.skills === "string"
+                  ? JSON.parse(profileRes.data.skills)
+                  : profileRes.data.skills || INITIAL_PROFILE.skills;
+              return Array.isArray(raw)
+                ? raw.map((s: Record<string, unknown>) => {
+                    const label = (s.label || s.category || s.name || "") as string;
+                    const items = (
+                      Array.isArray(s.items) ? s.items : Array.isArray(s.skills) ? s.skills : []
+                    ) as string[];
+                    return {
+                      id: (s.id as string | undefined) || undefined,
+                      label,
+                      items,
+                    };
+                  })
+                : INITIAL_PROFILE.skills;
+            })(),
+            socials: (() => {
+              const raw =
+                typeof profileRes.data.socials === "string"
+                  ? JSON.parse(profileRes.data.socials)
+                  : profileRes.data.socials || INITIAL_PROFILE.socials;
+              return Array.isArray(raw)
+                ? raw.map((s: Record<string, unknown>) => ({
+                    label: (s.label || s.name || "") as string,
+                    href: (s.href || s.url || "#") as string,
+                  }))
+                : INITIAL_PROFILE.socials;
+            })(),
           }
         : getLocal<ProfileData>(STORAGE_KEYS.PROFILE, INITIAL_PROFILE);
 

@@ -29,6 +29,7 @@ import type {
   ProfileData,
   SkillCategory,
 } from "../types/portfolio";
+import { AgentCopilot } from "../components/AgentCopilot";
 
 import type { LucideIcon } from "lucide-react";
 
@@ -53,6 +54,7 @@ function Index() {
     certifications: INITIAL_CERTIFICATIONS,
     profile: INITIAL_PROFILE,
   });
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
   useEffect(() => {
     getPortfolioData().then((res) => {
@@ -62,19 +64,44 @@ function Index() {
     });
   }, []);
 
+  const displayedProjects = activeFilter
+    ? data.projects.filter((p) => {
+        const term = activeFilter.toLowerCase();
+        return (
+          p.title.toLowerCase().includes(term) ||
+          p.tag.toLowerCase().includes(term) ||
+          p.blurb.toLowerCase().includes(term) ||
+          p.stack.some((s) => s.toLowerCase().includes(term))
+        );
+      })
+    : data.projects;
+
   return (
     <div className="relative min-h-screen overflow-x-hidden">
       <CursorGlow />
       <Nav resumeUrl={data.profile.resumeUrl} portraitUrl={data.profile.portraitUrl} />
       <main className="relative mx-auto max-w-6xl px-4 sm:px-6 pb-24 sm:pb-32 pt-24 sm:pt-28 md:pt-40">
         <Hero profile={data.profile} />
-        <Projects projects={data.projects} />
+        <Projects
+          projects={displayedProjects}
+          totalCount={data.projects.length}
+          activeFilter={activeFilter}
+          onClearFilter={() => setActiveFilter(null)}
+        />
         <About skills={data.profile.skills} bio={data.profile.bio} />
         <Experience experience={data.experience} />
         <Certifications certifications={data.certifications} />
         <Contact profile={data.profile} />
       </main>
       <Footer socials={data.profile.socials} />
+      <AgentCopilot
+        projects={data.projects}
+        experience={data.experience}
+        certifications={data.certifications}
+        profile={data.profile}
+        activeFilter={activeFilter}
+        onFilterChange={setActiveFilter}
+      />
     </div>
   );
 }
@@ -255,20 +282,64 @@ function Hero({ profile }: { profile: ProfileData }) {
   );
 }
 
-function Projects({ projects }: { projects: Project[] }) {
+function Projects({
+  projects,
+  totalCount,
+  activeFilter,
+  onClearFilter,
+}: {
+  projects: Project[];
+  totalCount: number;
+  activeFilter: string | null;
+  onClearFilter: () => void;
+}) {
   return (
     <section id="work" className="mt-32 scroll-mt-24">
-      <SectionHeader
-        eyebrow="Selected work"
-        title="Projects"
-        caption={`${projects.length} shipped`}
-      />
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        {projects.map((p, i) => (
-          <ProjectCard key={p.id || p.title} project={p} index={i} />
-        ))}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+        <div>
+          <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+            Selected work
+          </p>
+          <div className="mt-2 flex items-center gap-3 flex-wrap">
+            <h2 className="text-3xl font-medium tracking-tight md:text-4xl">Projects</h2>
+            {activeFilter && (
+              <div className="flex items-center gap-2 rounded-full border border-brand/40 bg-brand/10 px-3 py-1 text-xs font-medium text-brand">
+                <span>Filter: &ldquo;{activeFilter}&rdquo;</span>
+                <button
+                  onClick={onClearFilter}
+                  className="rounded-full bg-brand/20 p-0.5 hover:bg-brand/30 transition text-brand"
+                  aria-label="Clear filter"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+        <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+          {activeFilter
+            ? `Showing ${projects.length} of ${totalCount} shipped`
+            : `${projects.length} shipped`}
+        </span>
       </div>
+
+      {projects.length === 0 ? (
+        <div className="rounded-3xl border border-dashed border-border bg-surface/30 p-12 text-center">
+          <p className="text-sm text-muted-foreground">No projects match the current filter.</p>
+          <button
+            onClick={onClearFilter}
+            className="mt-4 inline-flex items-center rounded-full bg-brand px-4 py-2 text-xs font-medium text-background transition hover:opacity-90"
+          >
+            Reset Filter
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          {projects.map((p, i) => (
+            <ProjectCard key={p.id || p.title} project={p} index={i} />
+          ))}
+        </div>
+      )}
     </section>
   );
 }
@@ -506,17 +577,32 @@ function About({ skills }: { skills: SkillCategory[]; bio: string }) {
           </p>
         </div>
         <div className="grid gap-3 md:col-span-3 md:grid-cols-2">
-          {skills.map((s) => (
-            <div
-              key={s.label}
-              className="rounded-2xl border border-border bg-[image:var(--gradient-card)] p-5"
-            >
-              <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-                {s.label}
-              </p>
-              <p className="mt-3 text-sm leading-relaxed text-foreground">{s.items.join(" · ")}</p>
-            </div>
-          ))}
+          {(skills || []).map((s, idx) => {
+            const raw = s as unknown as Record<string, unknown>;
+            const label =
+              s.label ||
+              (typeof raw.category === "string" ? raw.category : "") ||
+              (typeof raw.name === "string" ? raw.name : "") ||
+              `Skill ${idx + 1}`;
+            const items = Array.isArray(s.items)
+              ? s.items
+              : Array.isArray(raw.skills)
+                ? (raw.skills as string[])
+                : [];
+            return (
+              <div
+                key={label + idx}
+                className="rounded-2xl border border-border bg-[image:var(--gradient-card)] p-5"
+              >
+                <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+                  {label}
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-foreground">
+                  {items.length ? items.join(" · ") : "—"}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
