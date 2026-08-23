@@ -77,16 +77,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Tahmidul Bin Ferdous — Computer Vision & Deep Learning Engineer" },
+      { title: "Portfolio of Kashfi" },
       {
         name: "description",
         content:
-          "Portfolio of Tahmidul Bin Ferdous — CV/DL engineer building object detection, generative and assistive vision systems. Based in Chattogram, Bangladesh.",
+          "Portfolio of Kashfi (Tahmidul Bin Ferdous) — Computer Vision & Deep Learning Engineer building object detection, generative and assistive vision systems.",
       },
-      { name: "author", content: "Tahmidul Bin Ferdous" },
+      { name: "author", content: "Tahmidul Bin Ferdous (Kashfi)" },
       {
         property: "og:title",
-        content: "Tahmidul Bin Ferdous — Computer Vision & Deep Learning Engineer",
+        content: "Portfolio of Kashfi",
       },
       {
         property: "og:description",
@@ -98,6 +98,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },

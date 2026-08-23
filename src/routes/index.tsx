@@ -34,6 +34,9 @@ import type { LucideIcon } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: Index,
+  head: () => ({
+    meta: [{ title: "Portfolio of Kashfi" }],
+  }),
 });
 
 const SOCIAL_ICONS: Record<string, LucideIcon> = {
@@ -173,13 +176,13 @@ function Nav({ resumeUrl }: { resumeUrl: string }) {
 function Hero({ profile }: { profile: ProfileData }) {
   return (
     <section id="top" className="relative pt-8 md:pt-16">
-      <div className="animate-fade-up flex items-center gap-4">
+      <div className="animate-fade-up flex items-center gap-3 sm:gap-4">
         <div className="relative shrink-0">
-          <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-brand/40 via-brand/10 to-transparent blur-md" />
+          <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-brand/40 via-brand/10 to-transparent blur-sm" />
           <img
             src={profile.portraitUrl}
             alt={profile.name}
-            className="relative size-16 rounded-full object-cover ring-2 ring-background shadow-lg md:size-20"
+            className="relative size-12 rounded-full object-cover ring-2 ring-background shadow-md md:size-14"
           />
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
