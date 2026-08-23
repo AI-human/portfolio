@@ -37,9 +37,6 @@ export function MediaUploader({
       onUploaded(url);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Failed to upload file";
-      setError(message);
-    } finally {
-      setUploading(false);
     }
   };
 

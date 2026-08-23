@@ -1,5 +1,15 @@
-import { useState } from "react";
-import { Plus, Trash2, Edit2, ExternalLink, Linkedin, Video, Save, X, Layers } from "lucide-react";
+import { useState, useEffect } from "react";
+import {
+  Plus,
+  Trash2,
+  Edit2,
+  ExternalLink,
+  Linkedin,
+  Video,
+  Save,
+  X,
+  Sparkles,
+} from "lucide-react";
 import type { Project } from "../../types/portfolio";
 import { saveProject, deleteProject } from "../../lib/portfolio-data";
 import { MediaUploader } from "./MediaUploader";
@@ -13,6 +23,18 @@ export function ProjectsManager({ projects, onRefresh }: ProjectsManagerProps) {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  // Prevent background scrolling when popup is open
+  useEffect(() => {
+    if (editingProject) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [editingProject]);
 
   const startCreate = () => {
     setEditingProject({
@@ -68,243 +90,16 @@ export function ProjectsManager({ projects, onRefresh }: ProjectsManagerProps) {
             Manage selected work, demo videos, tech stacks, and benchmarks.
           </p>
         </div>
-        {!editingProject && (
-          <button
-            type="button"
-            onClick={startCreate}
-            className="inline-flex items-center gap-2 rounded-full bg-foreground px-4 py-2 text-xs font-medium text-background transition-transform hover:scale-[1.02]"
-          >
-            <Plus className="size-4" /> Add Project
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={startCreate}
+          className="inline-flex items-center gap-2 rounded-full bg-foreground px-4 py-2 text-xs font-medium text-background transition-transform hover:scale-[1.02]"
+        >
+          <Plus className="size-4" /> Add Project
+        </button>
       </div>
 
-      {editingProject && (
-        <form
-          onSubmit={handleSave}
-          className="rounded-2xl border border-brand/40 bg-surface/90 p-6 shadow-xl space-y-5"
-        >
-          <div className="flex items-center justify-between border-b border-border pb-3">
-            <h3 className="text-base font-medium">
-              {isCreating ? "Add New Project" : `Edit: ${editingProject.title}`}
-            </h3>
-            <button
-              type="button"
-              onClick={() => {
-                setEditingProject(null);
-                setIsCreating(false);
-              }}
-              className="rounded-full p-1 text-muted-foreground hover:bg-surface-2 hover:text-foreground"
-            >
-              <X className="size-4" />
-            </button>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-1.5">
-              <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-                Project Title *
-              </label>
-              <input
-                type="text"
-                required
-                value={editingProject.title}
-                onChange={(e) => setEditingProject({ ...editingProject, title: e.target.value })}
-                placeholder="e.g. ID Card Detection"
-                className="w-full rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-sm focus:border-brand focus:outline-none"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-                Category / Tag *
-              </label>
-              <input
-                type="text"
-                required
-                value={editingProject.tag}
-                onChange={(e) => setEditingProject({ ...editingProject, tag: e.target.value })}
-                placeholder="e.g. Object Detection, HCI"
-                className="w-full rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-sm focus:border-brand focus:outline-none"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-                Date Completed
-              </label>
-              <input
-                type="text"
-                value={editingProject.date}
-                onChange={(e) => setEditingProject({ ...editingProject, date: e.target.value })}
-                placeholder="e.g. Mar 2025"
-                className="w-full rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-sm focus:border-brand focus:outline-none"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-                Tech Stack (comma-separated)
-              </label>
-              <input
-                type="text"
-                value={editingProject.stack.join(", ")}
-                onChange={(e) =>
-                  setEditingProject({
-                    ...editingProject,
-                    stack: e.target.value
-                      .split(",")
-                      .map((s) => s.trim())
-                      .filter(Boolean),
-                  })
-                }
-                placeholder="YOLOv11, PyTorch, Roboflow"
-                className="w-full rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-sm focus:border-brand focus:outline-none"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-              Description / Blurb *
-            </label>
-            <textarea
-              required
-              rows={3}
-              value={editingProject.blurb}
-              onChange={(e) => setEditingProject({ ...editingProject, blurb: e.target.value })}
-              placeholder="Detailed description of problem, pipeline, and results..."
-              className="w-full rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-sm focus:border-brand focus:outline-none"
-            />
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="space-y-1.5">
-              <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-                Benchmark Metric Label
-              </label>
-              <input
-                type="text"
-                value={editingProject.metric?.label || ""}
-                onChange={(e) =>
-                  setEditingProject({
-                    ...editingProject,
-                    metric: {
-                      label: e.target.value,
-                      value: editingProject.metric?.value || "",
-                    },
-                  })
-                }
-                placeholder="e.g. mAP@50"
-                className="w-full rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-sm focus:border-brand focus:outline-none"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-                Benchmark Metric Value
-              </label>
-              <input
-                type="text"
-                value={editingProject.metric?.value || ""}
-                onChange={(e) =>
-                  setEditingProject({
-                    ...editingProject,
-                    metric: {
-                      label: editingProject.metric?.label || "",
-                      value: e.target.value,
-                    },
-                  })
-                }
-                placeholder="e.g. 0.82"
-                className="w-full rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-sm focus:border-brand focus:outline-none"
-              />
-            </div>
-
-            <div className="flex items-center gap-2 pt-6">
-              <input
-                type="checkbox"
-                id="span-col"
-                checked={editingProject.span === "lg:col-span-2"}
-                onChange={(e) =>
-                  setEditingProject({
-                    ...editingProject,
-                    span: e.target.checked ? "lg:col-span-2" : undefined,
-                  })
-                }
-                className="size-4 rounded border-border"
-              />
-              <label htmlFor="span-col" className="text-xs text-foreground cursor-pointer">
-                Wide Card (Span 2 columns)
-              </label>
-            </div>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-1.5">
-              <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-                Code / Kaggle / Website Link
-              </label>
-              <input
-                type="url"
-                value={editingProject.link || ""}
-                onChange={(e) => setEditingProject({ ...editingProject, link: e.target.value })}
-                placeholder="https://www.kaggle.com/..."
-                className="w-full rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-sm focus:border-brand focus:outline-none"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
-                LinkedIn Post URL
-              </label>
-              <input
-                type="url"
-                value={editingProject.linkedin || ""}
-                onChange={(e) =>
-                  setEditingProject({
-                    ...editingProject,
-                    linkedin: e.target.value,
-                  })
-                }
-                placeholder="https://www.linkedin.com/..."
-                className="w-full rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-sm focus:border-brand focus:outline-none"
-              />
-            </div>
-          </div>
-
-          <MediaUploader
-            label="Project Demo Video (MP4 / WebM)"
-            accept="video/mp4,video/webm"
-            folder="videos"
-            currentUrl={editingProject.video}
-            onUploaded={(url) => setEditingProject({ ...editingProject, video: url })}
-            helperText="Upload video demonstration to Supabase Cloud Storage"
-          />
-
-          <div className="flex items-center justify-end gap-3 pt-2">
-            <button
-              type="button"
-              onClick={() => {
-                setEditingProject(null);
-                setIsCreating(false);
-              }}
-              className="rounded-full px-4 py-2 text-xs text-muted-foreground hover:bg-surface-2"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2 text-xs font-medium text-brand-foreground shadow-md transition-transform hover:scale-[1.02]"
-            >
-              <Save className="size-4" />
-              {saving ? "Saving..." : "Save Project"}
-            </button>
-          </div>
-        </form>
-      )}
-
+      {/* Projects List */}
       <div className="grid gap-3">
         {projects.map((project) => (
           <div
@@ -383,6 +178,273 @@ export function ProjectsManager({ projects, onRefresh }: ProjectsManagerProps) {
           </div>
         ))}
       </div>
+
+      {/* Edit / Create Project Popup Modal */}
+      {editingProject && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div
+            className="relative flex flex-col w-full max-w-2xl max-h-[90vh] rounded-3xl border border-border bg-background shadow-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-border px-6 py-4 bg-surface/50">
+              <div className="flex items-center gap-2">
+                <Sparkles className="size-4 text-brand" />
+                <h3 className="text-base font-medium text-foreground">
+                  {isCreating ? "Add New Project" : `Edit Project: ${editingProject.title}`}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingProject(null);
+                  setIsCreating(false);
+                }}
+                className="grid size-8 place-items-center rounded-full text-muted-foreground hover:bg-surface-2 hover:text-foreground transition-colors"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+
+            {/* Scrollable Form Body */}
+            <form
+              id="project-edit-form"
+              onSubmit={handleSave}
+              className="flex-1 overflow-y-auto px-6 py-5 space-y-5"
+            >
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+                    Project Title *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editingProject.title}
+                    onChange={(e) =>
+                      setEditingProject({
+                        ...editingProject,
+                        title: e.target.value,
+                      })
+                    }
+                    placeholder="e.g. ID Card Detection"
+                    className="w-full rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-sm focus:border-brand focus:outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+                    Category / Tag *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editingProject.tag}
+                    onChange={(e) =>
+                      setEditingProject({
+                        ...editingProject,
+                        tag: e.target.value,
+                      })
+                    }
+                    placeholder="e.g. Object Detection, HCI"
+                    className="w-full rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-sm focus:border-brand focus:outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+                    Date Completed
+                  </label>
+                  <input
+                    type="text"
+                    value={editingProject.date}
+                    onChange={(e) =>
+                      setEditingProject({
+                        ...editingProject,
+                        date: e.target.value,
+                      })
+                    }
+                    placeholder="e.g. Mar 2025"
+                    className="w-full rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-sm focus:border-brand focus:outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+                    Tech Stack (comma-separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={editingProject.stack.join(", ")}
+                    onChange={(e) =>
+                      setEditingProject({
+                        ...editingProject,
+                        stack: e.target.value
+                          .split(",")
+                          .map((s) => s.trim())
+                          .filter(Boolean),
+                      })
+                    }
+                    placeholder="YOLOv11, PyTorch, Roboflow"
+                    className="w-full rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-sm focus:border-brand focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+                  Description / Blurb *
+                </label>
+                <textarea
+                  required
+                  rows={3}
+                  value={editingProject.blurb}
+                  onChange={(e) =>
+                    setEditingProject({
+                      ...editingProject,
+                      blurb: e.target.value,
+                    })
+                  }
+                  placeholder="Detailed description of problem, pipeline, and results..."
+                  className="w-full rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-sm focus:border-brand focus:outline-none"
+                />
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-3">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+                    Benchmark Metric Label
+                  </label>
+                  <input
+                    type="text"
+                    value={editingProject.metric?.label || ""}
+                    onChange={(e) =>
+                      setEditingProject({
+                        ...editingProject,
+                        metric: {
+                          label: e.target.value,
+                          value: editingProject.metric?.value || "",
+                        },
+                      })
+                    }
+                    placeholder="e.g. mAP@50"
+                    className="w-full rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-sm focus:border-brand focus:outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+                    Benchmark Metric Value
+                  </label>
+                  <input
+                    type="text"
+                    value={editingProject.metric?.value || ""}
+                    onChange={(e) =>
+                      setEditingProject({
+                        ...editingProject,
+                        metric: {
+                          label: editingProject.metric?.label || "",
+                          value: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="e.g. 0.82"
+                    className="w-full rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-sm focus:border-brand focus:outline-none"
+                  />
+                </div>
+
+                <div className="flex items-center gap-2 pt-6">
+                  <input
+                    type="checkbox"
+                    id="span-col"
+                    checked={editingProject.span === "lg:col-span-2"}
+                    onChange={(e) =>
+                      setEditingProject({
+                        ...editingProject,
+                        span: e.target.checked ? "lg:col-span-2" : undefined,
+                      })
+                    }
+                    className="size-4 rounded border-border text-brand focus:ring-brand"
+                  />
+                  <label htmlFor="span-col" className="text-xs text-foreground cursor-pointer">
+                    Wide Card (Span 2 col)
+                  </label>
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+                    Code / Kaggle / Website Link
+                  </label>
+                  <input
+                    type="url"
+                    value={editingProject.link || ""}
+                    onChange={(e) =>
+                      setEditingProject({
+                        ...editingProject,
+                        link: e.target.value,
+                      })
+                    }
+                    placeholder="https://www.kaggle.com/..."
+                    className="w-full rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-sm focus:border-brand focus:outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+                    LinkedIn Post URL
+                  </label>
+                  <input
+                    type="url"
+                    value={editingProject.linkedin || ""}
+                    onChange={(e) =>
+                      setEditingProject({
+                        ...editingProject,
+                        linkedin: e.target.value,
+                      })
+                    }
+                    placeholder="https://www.linkedin.com/..."
+                    className="w-full rounded-xl border border-border bg-surface-2 px-3.5 py-2 text-sm focus:border-brand focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <MediaUploader
+                label="Project Demo Video (MP4 / WebM)"
+                accept="video/mp4,video/webm"
+                folder="videos"
+                currentUrl={editingProject.video}
+                onUploaded={(url) => setEditingProject({ ...editingProject, video: url })}
+                helperText="Upload video demonstration to Supabase Cloud Storage"
+              />
+            </form>
+
+            {/* Modal Sticky Footer */}
+            <div className="flex items-center justify-end gap-3 border-t border-border px-6 py-4 bg-surface/50">
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingProject(null);
+                  setIsCreating(false);
+                }}
+                className="rounded-full px-4 py-2 text-xs text-muted-foreground hover:bg-surface-2 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                form="project-edit-form"
+                disabled={saving}
+                className="inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2 text-xs font-medium text-brand-foreground shadow-md transition-transform hover:scale-[1.02]"
+              >
+                <Save className="size-4" />
+                {saving ? "Saving..." : "Save Project"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
