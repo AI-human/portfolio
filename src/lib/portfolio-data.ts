@@ -191,9 +191,9 @@ export const INITIAL_PROFILE: ProfileData = {
   ],
   socials: [
     { label: "GitHub", href: "https://github.com/AI-human" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/tahmidul-kashfi" },
     { label: "Kaggle", href: "https://www.kaggle.com/tahmidulkashfi" },
-    { label: "LeetCode", href: "https://leetcode.com/" },
+    { label: "LeetCode", href: "https://leetcode.com/u/tahmidulkashfi15/" },
   ],
 };
 
