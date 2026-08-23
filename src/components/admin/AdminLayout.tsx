@@ -4,14 +4,11 @@ import {
   User,
   Briefcase,
   Award,
-  Database,
   ArrowLeft,
   Lock,
   Unlock,
   CheckCircle2,
   AlertTriangle,
-  Copy,
-  ExternalLink,
   ShieldCheck,
 } from "lucide-react";
 import { isSupabaseConfigured, getSupabase } from "../../lib/supabase";
@@ -34,7 +31,7 @@ import { ResumeProfileManager } from "./ResumeProfileManager";
 import { ExperienceManager } from "./ExperienceManager";
 import { CertificationsManager } from "./CertificationsManager";
 
-type Tab = "projects" | "profile" | "experience" | "certs" | "setup";
+type Tab = "projects" | "profile" | "experience" | "certs";
 
 export function AdminLayout() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -253,19 +250,6 @@ export function AdminLayout() {
             <Award className="size-4" />
             Certifications ({certifications.length})
           </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab("setup")}
-            className={`ml-auto inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium transition-colors ${
-              activeTab === "setup"
-                ? "bg-brand text-brand-foreground"
-                : "border border-border bg-surface/40 text-muted-foreground hover:bg-surface hover:text-foreground"
-            }`}
-          >
-            <Database className="size-4" />
-            Vercel & Supabase Setup
-          </button>
         </div>
 
         {/* Tab Views */}
@@ -287,104 +271,9 @@ export function AdminLayout() {
             {activeTab === "certs" && (
               <CertificationsManager certifications={certifications} onRefresh={loadData} />
             )}
-            {activeTab === "setup" && <CloudSetupGuide />}
           </>
         )}
       </main>
-    </div>
-  );
-}
-
-function CloudSetupGuide() {
-  const [copied, setCopied] = useState(false);
-
-  const copyEnvSnippet = () => {
-    const snippet = `VITE_SUPABASE_URL=https://your-project.supabase.co\nVITE_SUPABASE_ANON_KEY=your-anon-key-here`;
-    navigator.clipboard.writeText(snippet);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
-  };
-
-  return (
-    <div className="max-w-3xl space-y-6">
-      <div>
-        <h2 className="text-xl font-medium tracking-tight">
-          Vercel & Supabase Cloud Storage Setup
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          Follow these 3 quick steps to enable persistent video, resume, and database sync on
-          Vercel.
-        </p>
-      </div>
-
-      <div className="space-y-4">
-        {/* Step 1 */}
-        <div className="rounded-2xl border border-border bg-[image:var(--gradient-card)] p-6 space-y-3">
-          <div className="flex items-center gap-2 font-medium text-sm">
-            <span className="grid size-6 place-items-center rounded-full bg-brand/20 text-brand text-xs">
-              1
-            </span>
-            <span>Create a free Supabase Project</span>
-          </div>
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            Go to{" "}
-            <a
-              href="https://supabase.com"
-              target="_blank"
-              rel="noreferrer"
-              className="text-brand hover:underline inline-flex items-center gap-1"
-            >
-              supabase.com <ExternalLink className="size-3" />
-            </a>{" "}
-            and create a new free project (e.g. `portfolio`).
-          </p>
-        </div>
-
-        {/* Step 2 */}
-        <div className="rounded-2xl border border-border bg-[image:var(--gradient-card)] p-6 space-y-3">
-          <div className="flex items-center gap-2 font-medium text-sm">
-            <span className="grid size-6 place-items-center rounded-full bg-brand/20 text-brand text-xs">
-              2
-            </span>
-            <span>Run SQL Schema (Creates Tables & Storage Bucket)</span>
-          </div>
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            Open the <strong>SQL Editor</strong> tab in Supabase dashboard, copy and paste the
-            contents of{" "}
-            <code className="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[11px] text-brand">
-              supabase-schema.sql
-            </code>{" "}
-            included in your repo, and click <strong>Run</strong>.
-          </p>
-        </div>
-
-        {/* Step 3 */}
-        <div className="rounded-2xl border border-border bg-[image:var(--gradient-card)] p-6 space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 font-medium text-sm">
-              <span className="grid size-6 place-items-center rounded-full bg-brand/20 text-brand text-xs">
-                3
-              </span>
-              <span>Add Environment Variables in Vercel</span>
-            </div>
-            <button
-              type="button"
-              onClick={copyEnvSnippet}
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted-foreground hover:text-foreground"
-            >
-              <Copy className="size-3" />
-              {copied ? "Copied!" : "Copy Variables"}
-            </button>
-          </div>
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            In Vercel → <strong>Project Settings → Environment Variables</strong>, add:
-          </p>
-          <pre className="rounded-xl border border-border bg-surface-2 p-3 font-mono text-xs text-foreground">
-            VITE_SUPABASE_URL=https://your-project.supabase.co{"\n"}
-            VITE_SUPABASE_ANON_KEY=eyJhbGciOi...
-          </pre>
-        </div>
-      </div>
     </div>
   );
 }
