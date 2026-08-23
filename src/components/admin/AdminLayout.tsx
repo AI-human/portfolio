@@ -82,14 +82,17 @@ export function AdminLayout() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Default admin pin or password
-    const validPins = ["admin123", "kashfi2026", "admin"];
+    const envPassword = import.meta.env.VITE_ADMIN_PASSWORD;
+    const validPins = envPassword
+      ? [envPassword.trim()]
+      : ["admin123", "kashfi2026", "admin"];
+
     if (validPins.includes(passwordInput.trim())) {
       setIsAuthenticated(true);
       sessionStorage.setItem("admin_session_auth", "true");
       setAuthError("");
     } else {
-      setAuthError("Incorrect passcode. (Try 'admin123')");
+      setAuthError("Incorrect passcode. Access denied.");
     }
   };
 
