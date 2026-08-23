@@ -65,7 +65,7 @@ function Index() {
   return (
     <div className="relative min-h-screen overflow-x-hidden">
       <CursorGlow />
-      <Nav resumeUrl={data.profile.resumeUrl} />
+      <Nav resumeUrl={data.profile.resumeUrl} portraitUrl={data.profile.portraitUrl} />
       <main className="relative mx-auto max-w-6xl px-4 sm:px-6 pb-24 sm:pb-32 pt-24 sm:pt-28 md:pt-40">
         <Hero profile={data.profile} />
         <Projects projects={data.projects} />
@@ -133,15 +133,20 @@ function CursorGlow() {
   );
 }
 
-function Nav({ resumeUrl }: { resumeUrl: string }) {
+function Nav({ resumeUrl, portraitUrl }: { resumeUrl: string; portraitUrl: string }) {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4">
-      <nav className="flex w-full max-w-3xl items-center justify-between rounded-full border border-border bg-background/70 px-4 py-2 backdrop-blur-xl">
-        <a href="#top" className="flex items-center gap-2 text-sm font-medium">
-          <span className="grid size-6 place-items-center rounded-full bg-brand/20 text-brand ring-1 ring-brand/30">
-            <span className="size-1.5 rounded-full bg-brand shadow-[0_0_10px_var(--brand-glow)]" />
-          </span>
-          <span className="tracking-tight">Kashfi</span>
+    <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-3 pt-3 sm:px-4 sm:pt-4">
+      <nav className="flex w-full max-w-3xl items-center justify-between rounded-full border border-border bg-background/70 px-4 py-2 backdrop-blur-xl shadow-sm">
+        <a href="#top" className="flex items-center gap-2.5 text-sm font-medium group">
+          <div className="relative shrink-0">
+            <div className="absolute -inset-0.5 rounded-full bg-brand/30 blur-[2px] transition-opacity group-hover:opacity-100" />
+            <img
+              src={portraitUrl}
+              alt="Kashfi"
+              className="relative size-6.5 rounded-full object-cover ring-1 ring-border shadow-sm"
+            />
+          </div>
+          <span className="tracking-tight font-medium">Kashfi</span>
         </a>
         <div className="hidden items-center gap-1 text-sm text-muted-foreground md:flex">
           {[
@@ -182,7 +187,7 @@ function Hero({ profile }: { profile: ProfileData }) {
           <img
             src={profile.portraitUrl}
             alt={profile.name}
-            className="relative size-12 rounded-full object-cover ring-2 ring-background shadow-md md:size-14"
+            className="relative size-10 rounded-full object-cover ring-2 ring-background shadow-md sm:size-11 md:size-12"
           />
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
