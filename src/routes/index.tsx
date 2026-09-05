@@ -506,9 +506,16 @@ function About({ skills }: { skills: SkillCategory[]; bio: string }) {
       <div className="grid gap-8 md:grid-cols-5">
         <div className="md:col-span-2">
           <p className="text-lg leading-relaxed text-muted-foreground">
-            I care about vision systems that <span className="text-foreground">actually run</span> —
-            small, fast, and honest about their limits. I like the loop from data through model to
-            deployment, and I keep receipts (metrics, demos, notebooks).
+            {bio ? (
+              bio
+            ) : (
+              <>
+                I care about vision systems that{" "}
+                <span className="text-foreground">actually run</span> — small, fast, and honest
+                about their limits. I like the loop from data through model to deployment, and I
+                keep receipts (metrics, demos, notebooks).
+              </>
+            )}
           </p>
         </div>
         <div className="grid gap-3 md:col-span-3 md:grid-cols-2">

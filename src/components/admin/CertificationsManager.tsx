@@ -35,7 +35,7 @@ export function CertificationsManager({ certifications, onRefresh }: Certificati
         year: "numeric",
       }),
       href: "",
-      image: "/content/brave_screenshot_www.coursera.org.png",
+      image: "/content/cert_nn_dl.webp",
       order: certifications.length + 1,
     });
     setIsCreating(true);

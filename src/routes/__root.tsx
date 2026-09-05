@@ -94,15 +94,46 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "CV/DL engineer building object detection, generative and assistive vision systems.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://tahmidkashfi.dev" },
+      { property: "og:image", content: "https://tahmidkashfi.dev/content/professional.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Portfolio of Kashfi" },
+      {
+        name: "twitter:description",
+        content:
+          "CV/DL engineer building object detection, generative and assistive vision systems.",
+      },
+      { name: "twitter:image", content: "https://tahmidkashfi.dev/content/professional.jpg" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "canonical", href: "https://tahmidkashfi.dev" },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Person",
+          name: "Tahmidul Bin Ferdous",
+          alternateName: "Kashfi",
+          url: "https://tahmidkashfi.dev",
+          image: "https://tahmidkashfi.dev/content/professional.jpg",
+          jobTitle: "Computer Vision & Deep Learning Engineer",
+          sameAs: [
+            "https://github.com/AI-human",
+            "https://www.linkedin.com/in/tahmidul-kashfi",
+            "https://www.kaggle.com/tahmidulkashfi",
+            "https://leetcode.com/u/tahmidulkashfi15/",
+            "https://codeforces.com/profile/kashfi20",
+          ],
+        }),
       },
     ],
   }),
