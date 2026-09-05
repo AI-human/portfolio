@@ -499,7 +499,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   );
 }
 
-function About({ skills }: { skills: SkillCategory[]; bio: string }) {
+function About({ skills, bio }: { skills: SkillCategory[]; bio?: string }) {
   return (
     <section id="about" className="mt-32 scroll-mt-24">
       <SectionHeader eyebrow="About" title="Stack & focus" />
